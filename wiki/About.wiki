@@ -3,6 +3,6 @@
 = Introduction =
 
 This project will consist of additional tools to be used on the context of the data published at
-dx.doi.org/10.4119/unibi/citec.2014.14
+[dx.doi.org/10.4119/unibi/citec.2014.14]
 
 A system for preparing the texts which have been annotated will be available soon.
