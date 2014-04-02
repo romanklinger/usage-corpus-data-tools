@@ -1,3 +1,7 @@
-Currently, this project is empty. It will include data soon.
+For help with this project, please check out the website 
 
-If you have any questions, write an email: rklinger@cit-ec.uni-bielefeld.de
+https://code.google.com/p/usage-corpus-data-tools/
+
+and the publication data of the USAGE corpus.
+
+http://dx.doi.org/10.4119/unibi/citec.2014.14
