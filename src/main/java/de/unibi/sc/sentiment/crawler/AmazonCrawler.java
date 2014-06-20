@@ -62,7 +62,7 @@ public class AmazonCrawler {
      * @param list list with search items (see documentation for format)
      * @return true, if crawl approach went correct, false otherwise
      */
-    public boolean crawl(SearchItemList list) {
+    public boolean crawl(SearchItemList list, boolean breaksToSpace) {
         for (int i = 0; i < list.size(); ++i) {
             String id = list.getReviewID(i);
             System.err.println("Crawling " + id + "; number " + i);
@@ -91,7 +91,7 @@ public class AmazonCrawler {
                         continue;
                     }
                     String responseBody = readResponse(method);
-                    Review extractedReview = extractContent(responseBody);
+                    Review extractedReview = extractContent(responseBody,breaksToSpace);
                     writeReview(extractedReview, list.getInternalID(i), list.getReviewID(i), list.getAmazonID(i));
                 } catch (HttpException e) {
                     System.err.println("Fatal protocol violation: " + e.getMessage());
@@ -163,7 +163,8 @@ public class AmazonCrawler {
      * @param input raw html string
      * @return Review object with extracted review data
      */
-    private Review extractContent(String input) {
+    private Review extractContent(String input,boolean breaksToSpace) {
+        System.err.println(input);
         String date = null, author = null, productname = null, title = null, review = null;
         Pattern datePattern = Pattern.compile(".*<nobr>(.*)</nobr>.*</div>.*<div style=\"margin-bottom:0.5em;\">.*", Pattern.DOTALL);
         Pattern authorPattern = Pattern.compile(".*<div><div style=\"float:left;\">.*</div><div style=\"float:left;\"><a href=.* ><span style = \"font-weight: bold;\">(.*)</span></a></div></div><div style=\"clear:both;\"></div>.*", Pattern.DOTALL);
@@ -185,6 +186,8 @@ public class AmazonCrawler {
 
         m = reviewPattern.matcher(input);
         review = m.matches() ? m.group(1) : "no match found";
+
+        if (breaksToSpace) review = review.replaceAll("<br ?/>", " ") ;
 
         String cleanedReviewTitle = HTMLUtil.textFromHTML(title).replaceAll("&#34;","\"").replaceAll("&#252;","&uuml;") ;
         String cleanedReviewText = HTMLUtil.textFromHTML(review).replaceAll("&#34;","\"").replaceAll("&#252;","&uuml;") ;

@@ -25,9 +25,11 @@ public class CrawlByAmazonID {
         String inputFile = args[0] ;
         String domain = args[1] ;
         String outfile = args[2] ;
+        boolean breaksToSpace = (args.length > 3) && args[3].equals("breaks") ;
+        if (breaksToSpace) System.err.println("The \"breaks\" parameter is currently not well tested!"); //remove this line when its functionality is implemented
         SearchItemList list = readInData(inputFile);
         checkList(list);
-        start(list, domain,outfile);
+        start(list, domain,outfile,breaksToSpace);
     }
 
     /**
@@ -56,6 +58,8 @@ public class CrawlByAmazonID {
             System.err.println("(the product ID is not actually used)");
             System.err.println("The second parameter should be the top level domain to be used.");
             System.err.println("Specify an output file as third argument.");
+            System.err.println("The fourth parameter is optionally \"breaks\", which replaces line breaks in the review by white space. (in contrast to the default behaviour.)");
+            System.err.println("If you use the \"breaks\" parameter, you should recalculate the offsets of the CSV file using the CorrectOffsets class.");
             System.err.println("----------------------------------------------");
             System.exit(-1);
         }
@@ -102,7 +106,7 @@ public class CrawlByAmazonID {
      * @param tldStr top level domain string
      * @return true if crawl process went normally, false otherwise
      */
-    private static boolean start(SearchItemList list, String tldStr, String outFile) {
+    private static boolean start(SearchItemList list, String tldStr, String outFile, boolean breaksToSpace) {
         TopLevelDomain tld = null;
         switch (tldStr) {
             case "de":
@@ -116,7 +120,7 @@ public class CrawlByAmazonID {
         }
         AmazonCrawler crawler = new AmazonCrawler(tld, 500);
         if (crawler.openStream(outFile) == true) {
-            crawler.crawl(list);
+            crawler.crawl(list,breaksToSpace);
             crawler.closeStream();
             return true;
         }
