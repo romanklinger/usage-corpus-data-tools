@@ -164,7 +164,7 @@ public class AmazonCrawler {
      * @return Review object with extracted review data
      */
     private Review extractContent(String input,boolean breaksToSpace) {
-        System.err.println(input);
+        //System.err.println(input);
         String date = null, author = null, productname = null, title = null, review = null;
         Pattern datePattern = Pattern.compile(".*<nobr>(.*)</nobr>.*</div>.*<div style=\"margin-bottom:0.5em;\">.*", Pattern.DOTALL);
         Pattern authorPattern = Pattern.compile(".*<div><div style=\"float:left;\">.*</div><div style=\"float:left;\"><a href=.* ><span style = \"font-weight: bold;\">(.*)</span></a></div></div><div style=\"clear:both;\"></div>.*", Pattern.DOTALL);
