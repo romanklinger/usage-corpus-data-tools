@@ -13,7 +13,10 @@ import io.Source
 object Entry {
   def apply(line:String) = {
     val s = line.split("\t")
-    new Entry(s(0).trim,s(1).trim,s(2).toInt,s(3).toInt,s(4).trim,s(5).trim,s(6).trim,s(7).trim)
+    if (s.length > 6)
+      new Entry(s(0).trim,s(1).trim,s(2).toInt,s(3).toInt,s(4).trim,s(5).trim,s(6).trim,s(7).trim)
+    else
+      new Entry(s(0).trim,s(1).trim,s(2).toInt,s(3).toInt,s(4).trim,s(5).trim,"","")
   }
   def apply() = new Entry("","",-1,-1,"","","","")
 }

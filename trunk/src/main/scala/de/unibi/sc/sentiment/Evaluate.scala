@@ -37,6 +37,10 @@ object Evaluate {
     printHeader
     evaluatePhrase(goldCSV,predictedCSV,"aspect")
     evaluatePhrase(goldCSV,predictedCSV,"subjective")
+    if (predictedRelFilename.toLowerCase != "null" && goldRelFilename.toLowerCase != "null") {
+
+      // evaluateRelation()
+    }
 
 
     System.err.println("Done.")
