@@ -28,10 +28,27 @@ object TxtEntry {
  */
 case class Entry(classs:String, internalId:String, leftOffset:Int, rightOffset:Int, stringRepr:String, annotationId:String, foreigness:String, relatedness:String) {
   override def toString() = classs+"\t"+internalId+"\t"+leftOffset+"\t"+rightOffset+"\t"+stringRepr+"\t"+annotationId+"\t"+foreigness+"\t"+relatedness
+
   def matches(text:String) = {
      rightOffset <= text.length && text.substring(leftOffset,rightOffset) == stringRepr
   }
+
+  def matches(otherEntry:Entry) : Boolean = {
+    (classs == otherEntry.classs) && (internalId == otherEntry.internalId) &&
+      (
+        (
+          (leftOffset == otherEntry.leftOffset) && (rightOffset == otherEntry.rightOffset) // exact
+        )
+        ||
+        (
+          // not exact, but string is right
+          (scala.math.abs(leftOffset - otherEntry.leftOffset) < 4) && (scala.math.abs(rightOffset - otherEntry.rightOffset) < 4) && stringRepr == otherEntry.stringRepr
+        )
+      )
+  }
+
   def isNonNull = { leftOffset != -1 }
+
   def toString(txt:String) = {
     val newStringRepr = if (rightOffset < txt.length) txt.substring(leftOffset,rightOffset) else stringRepr+"[OUT-OF-LENGTH]"
     classs+"\t"+internalId+"\t"+leftOffset+"\t"+rightOffset+"\t"+newStringRepr+"\t"+annotationId+"\t"+foreigness+"\t"+relatedness
