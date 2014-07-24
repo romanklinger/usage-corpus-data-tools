@@ -10,7 +10,7 @@ import io.Source
  * Date: 19.03.14
  * Time: 15:17
  */
-object Entry {
+object Entry { // csventry
   def apply(line:String) = {
     val s = line.split("\t")
     if (s.length > 6)
@@ -26,6 +26,36 @@ object TxtEntry {
     new TxtEntry(s(0),s(1),s(2),s(3),s(4),s(5))
   }
 }
+
+object RELEntry {
+  def apply(line:String) = {
+    val s = line.split("\t")
+    //TARG-SUBJ       1156    1156-aspect3    1156-subjective2        old white Wal-Mart microwave    Sure beats
+    new RELEntry(s(0).trim,s(1).trim,s(2).trim,s(3),s(4).trim,s(5).trim)
+  }
+}
+
+case class RELEntry(classs:String, internalId:String, phraseId1:String, phraseId2:String, stringRepr1:String, stringRepr2:String) {
+  def matches(otherRELEntry:RELEntry,otherCSVEntries:ArrayBuffer[Entry],thisCSVEntries:ArrayBuffer[Entry]) : Boolean = {
+    // get offsets for both participating phrases and then check if they are the same in the other REL
+    val phraseOneOption = thisCSVEntries.find(csvEntry => csvEntry.annotationId == phraseId1)
+    val phraseTwoOption = thisCSVEntries.find(csvEntry => csvEntry.annotationId == phraseId2)
+    if (phraseOneOption.isDefined && phraseTwoOption.isDefined) {
+      // now let's see, if these offsets fit to to the otherRELEntry
+      val otherphraseOneOption = otherCSVEntries.find(csvEntry => csvEntry.annotationId == otherRELEntry.phraseId1)
+      val otherphraseTwoOption = otherCSVEntries.find(csvEntry => csvEntry.annotationId == otherRELEntry.phraseId2)
+      otherphraseOneOption.isDefined && otherphraseTwoOption.isDefined &&
+      (
+        (phraseOneOption.get.matches(otherphraseOneOption.get) && phraseTwoOption.get.matches(otherphraseTwoOption.get))
+        ||
+        (phraseOneOption.get.matches(otherphraseTwoOption.get) && phraseTwoOption.get.matches(otherphraseOneOption.get)) // might happen with participants data, though not in my code
+      )
+    } else {
+      false
+    }
+  }
+}
+
 /*
 2236    B000ALVUM6      143     Philips HD7546/20 Thermo Kaffeemaschine (1000 W, Tropf-Stopp Funktion) schwarz/Metall   Preis Leistung Weltklasse       Die Kaffeemaschine wurde für das Büro angeschafft. Seit geraumer Zeit ist das gerät im Dauereinsatz ( ca 8 Brühvorgänge ( 8 Liter ) pro Tag.)Bislang keine Mängel erkennbar. Entgegen der AMAZON beschreibung, schaltet sich die Maschine auch von selber aus.das H
  */
