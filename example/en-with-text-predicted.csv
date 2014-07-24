@@ -1,12 +1,12 @@
 subjective	3144	0	4	Love	3144-subjective0	positive	related
-aspect	3144	52	58	manual	3144-aspect3	unknown	related
+aspect	3144	52	58	manual	ID1	unknown	related
 subjective	3144	68	92	little bit to be desired	3144-subjective4	negative	related
 subjective	3144	118	127	wonderful	3144-subjective5	positive	related
 aspect	3144	128	145	little dishwasher	3144-aspect6	unknown	related
 aspect	3144	281	287	Amazon	3144-aspect7	unknown	related
 aspect	3144	322	332	dishwasher	3144-aspect8	unknown	related
 aspect	3144	354	365	user manual	3144-aspect9	unknown	related
-subjective	3144	428	439	better than	3144-subjective11	positive	related
+subjective	3144	428	439	better than	ID2	positive	related
 aspect	3144	422	427	works	3144-aspect12	unknown	related
 subjective	3144	468	472	love	3144-subjective13	positive	related
 aspect	3144	473	475	it	3144-aspect14	unknown	related
