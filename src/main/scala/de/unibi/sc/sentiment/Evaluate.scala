@@ -1,7 +1,7 @@
 package de.unibi.sc.sentiment
 
 import collection.mutable.{ArrayBuffer, HashMap}
-import crawling.{TxtEntry, Entry}
+import crawling.{RELEntry, TxtEntry, Entry}
 import io.Source
 
 
@@ -11,10 +11,6 @@ import io.Source
  * Date: 23.07.14
  * Time: 14:17
  */
-case class RELEntry(classs:String, internalId:String, phraseId1:String, phraseId2:String, stringRepr1:String, stringRepr2:String) {
-
-}
-
 object Evaluate {
   final val OFFSET = 4
   def main(args:Array[String]) : Unit = {
@@ -38,8 +34,9 @@ object Evaluate {
     evaluatePhrase(goldCSV,predictedCSV,"aspect")
     evaluatePhrase(goldCSV,predictedCSV,"subjective")
     if (predictedRelFilename.toLowerCase != "null" && goldRelFilename.toLowerCase != "null") {
-
-      // evaluateRelation()
+      val goldRel = readRELFile(goldRelFilename)
+      val predictedRel = readRELFile(predictedRelFilename)
+      evaluateRelation(goldRel,predictedRel,goldCSV,predictedCSV)
     }
 
 
@@ -53,6 +50,15 @@ object Evaluate {
       csvBuffer += csvEntry
     }
     csvBuffer
+  }
+
+  def readRELFile(relFilename:String) : ArrayBuffer[RELEntry] = {
+    val relBuffer = new ArrayBuffer[RELEntry]()
+    for (line <- Source.fromFile(relFilename).getLines()) {
+      val relEntry = RELEntry(line)
+      relBuffer += relEntry
+    }
+    relBuffer
   }
 
   def evaluatePhrase(goldCSV:ArrayBuffer[Entry],predictedCSV:ArrayBuffer[Entry],phraseClass:String) = {
@@ -71,6 +77,24 @@ object Evaluate {
     }
     fn = goldCSVForAnalysis.length
     printResult(phraseClass,tp,fp,fn)
+  }
+
+  def evaluateRelation(goldRel:ArrayBuffer[RELEntry],predictedRel:ArrayBuffer[RELEntry],goldCSV:ArrayBuffer[Entry],predictedCSV:ArrayBuffer[Entry]) = {
+    val goldRELForAnalysis = goldRel.clone()
+    var tp = 0
+    var fp = 0
+    var fn = 0
+    for (prediction <- predictedRel) {
+      val fittingGoldRelation = goldRELForAnalysis.find(goldRelation => goldRelation.matches(prediction,predictedCSV,goldCSV))
+      if (fittingGoldRelation.isDefined) {
+        tp += 1
+        goldRELForAnalysis -= fittingGoldRelation.get
+      } else {
+        fp += 1
+      }
+    }
+    fn = goldRELForAnalysis.length
+    printResult("Relation",tp,fp,fn)
   }
 
   def printResult(prefix:String,tp:Double,fp:Double,fn:Double) = {
