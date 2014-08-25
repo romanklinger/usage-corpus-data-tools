@@ -59,7 +59,7 @@ case class RELEntry(classs:String, internalId:String, phraseId1:String, phraseId
 /*
 2236    B000ALVUM6      143     Philips HD7546/20 Thermo Kaffeemaschine (1000 W, Tropf-Stopp Funktion) schwarz/Metall   Preis Leistung Weltklasse       Die Kaffeemaschine wurde für das Büro angeschafft. Seit geraumer Zeit ist das gerät im Dauereinsatz ( ca 8 Brühvorgänge ( 8 Liter ) pro Tag.)Bislang keine Mängel erkennbar. Entgegen der AMAZON beschreibung, schaltet sich die Maschine auch von selber aus.das H
  */
-case class Entry(classs:String, internalId:String, leftOffset:Int, rightOffset:Int, stringRepr:String, annotationId:String, foreigness:String, relatedness:String) {
+case class Entry(classs:String, internalId:String, var leftOffset:Int, var rightOffset:Int, stringRepr:String, annotationId:String, foreigness:String, relatedness:String) {
   override def toString() = classs+"\t"+internalId+"\t"+leftOffset+"\t"+rightOffset+"\t"+stringRepr+"\t"+annotationId+"\t"+foreigness+"\t"+relatedness
 
   def matches(text:String) = {
@@ -86,8 +86,14 @@ case class Entry(classs:String, internalId:String, leftOffset:Int, rightOffset:I
     val newStringRepr = if (rightOffset < txt.length) txt.substring(leftOffset,rightOffset) else stringRepr+"[OUT-OF-LENGTH]"
     classs+"\t"+internalId+"\t"+leftOffset+"\t"+rightOffset+"\t"+newStringRepr+"\t"+annotationId+"\t"+foreigness+"\t"+relatedness
   }
+
+  def offsetsMinusValue(value:Int) = {
+    leftOffset -= value
+    rightOffset -= value
+  }
 }
 case class TxtEntry(internalId:String, productId:String, reviewId:String, name:String, reviewTitle:String, reviewText:String)
+
 object CorrectOffsets {
   final val OFFSET = 4
   def main(args:Array[String]) : Unit = {
@@ -103,15 +109,23 @@ object CorrectOffsets {
       System.err.println("----------------------------------------------");
       System.exit(-1);
     }
-    start(args(0),args(1))
+    val minusTitleLength = args.length > 2 && (args(2) == "minusTitleLength") // hidden parameter
+    start(args(0),args(1),minusTitleLength)
   }
-  def start(txtFile:String,csvFile:String) {
+  def start(txtFile:String,csvFile:String,minusTitleLength:Boolean) {
     System.err.println("Reading text file into memory: "+txtFile+" ...")
     val internalIdText = readTxtFile(txtFile)
+    val internalIdProductTitle = if (minusTitleLength) readTxtFileTitlesOnly(txtFile) else new HashMap[String,String]
     // check each line in txt file
     for (line <- Source.fromFile(csvFile).getLines()) {
       val csvEntry = Entry(line)
       val text = internalIdText(csvEntry.internalId)
+      if (minusTitleLength) {
+        val titleText = internalIdProductTitle(csvEntry.internalId)
+        val lengthOfTitle = titleText.length
+        //System.err.println(">>> "+titleText+": "+lengthOfTitle)
+        csvEntry.offsetsMinusValue(lengthOfTitle+1)
+      }
       if (csvEntry.matches(text)) {
         println(csvEntry)
 //        System.err.println(line+" OK!")
@@ -153,6 +167,17 @@ object CorrectOffsets {
     for (line <- s.getLines()) {
       val entry = TxtEntry(line)
       internalIdToTxtEntry += entry.internalId -> (entry.reviewTitle+" "+entry.reviewText)
+      //System.err.println(entry.reviewTitle+" "+entry.reviewText)
+    }
+    internalIdToTxtEntry
+  }
+
+  def readTxtFileTitlesOnly(txtFile:String) : HashMap[String,String] = {
+    val s = Source.fromFile(txtFile)
+    val internalIdToTxtEntry = new HashMap[String,String]
+    for (line <- s.getLines()) {
+      val entry = TxtEntry(line)
+      internalIdToTxtEntry += entry.internalId -> (entry.name)
     }
     internalIdToTxtEntry
   }
