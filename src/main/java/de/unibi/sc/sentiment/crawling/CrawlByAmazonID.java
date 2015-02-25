@@ -84,6 +84,10 @@ public class CrawlByAmazonID {
             BufferedReader br = new BufferedReader(fr);
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split("\t");
+                if (fields.length != 3) {
+                    System.err.println("Skipping line with less than 3 fields:\n"+line) ;
+                    break ;
+                }
                 assert (fields[0].length() == 4 && fields[1].length() == 10);
                 list.addInternalID(fields[0]);
                 list.addAmazonID(fields[1]);
