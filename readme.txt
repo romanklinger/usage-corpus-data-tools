@@ -1,9 +1,10 @@
 * Introduction *
 
 This project contains tools to be used with the USAGE corpus
-(see http://dx.doi.org/10.4119/unibi/citec.2014.14). It is 
+(see http://dx.doi.org/10.4119/unibi/citec.2014.14). It has originall been 
 maintained at 
-https://code.google.com/p/usage-corpus-data-tools/
+https://code.google.com/p/usage-corpus-data-tools/ is now moved to 
+https://github.com/romanklinger/usage-corpus-data-tools
 
 * Compilation *
 
