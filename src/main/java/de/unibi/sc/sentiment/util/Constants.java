@@ -13,7 +13,7 @@ public final class Constants {
      */
     public static final String SOURCE_AMAZON = "amazon";
 
-    public static final String AMAZON_CRAWL_1 = "http://www.amazon.";
+    public static final String AMAZON_CRAWL_1 = "https://www.amazon.";
     public static final String AMAZON_CRAWL_2 = "/review/";
 
     /**

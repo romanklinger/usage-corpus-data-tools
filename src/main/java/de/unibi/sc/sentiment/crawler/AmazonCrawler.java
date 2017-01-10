@@ -72,7 +72,7 @@ public class AmazonCrawler {
                         + Constants.AMAZON_CRAWL_2
                         + id;
                 HttpClient client = new HttpClient();
-                //setUserAgent(client, "firefox");
+                setUserAgent(client, "firefox");
                 HttpMethod method = new GetMethod(url);
                 setEncoding(method, "text/html; charset=UTF-8");
                 try {

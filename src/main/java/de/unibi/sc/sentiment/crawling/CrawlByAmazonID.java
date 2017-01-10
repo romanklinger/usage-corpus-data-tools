@@ -19,8 +19,8 @@ public class CrawlByAmazonID {
 
     public static void main(String[] args) {
         System.err.println("Amazon Review Crawler based on Review IDs");
-        System.err.println("Authors: Robin Schiewer (rschiewer@techfak.uni-bielefeld.de)");
-        System.err.println("and      Roman Klinger  (rklinger@cit-ec.uni-bielefeld.de)");
+        System.err.println("Authors: Robin Schiewer");
+        System.err.println("and      Roman Klinger  (klinger@ims.uni-stuttgart.de)");
         checkArgs(args);
         String inputFile = args[0] ;
         String domain = args[1] ;
